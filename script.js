@@ -27,18 +27,25 @@ let currentMode = 'discover';
 
 // ─── FETCH WRAPPER ───
 async function tmdb(endpoint, params = {}) {
-  const url = new URL(BASE + endpoint);
-  url.searchParams.set('api_key', API_KEY);
-  url.searchParams.set('language', 'en-US');
-  Object.entries(params).forEach(([k,v]) => { if(v !== undefined && v !== '') url.searchParams.set(k,v); });
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(res.status);
-    return res.json();
-  } catch(e) {
-    console.warn('TMDB fetch failed:', e);
-    return null;
+
+  const url = new URL('/api/movies', window.location.origin)
+
+  url.searchParams.set('endpoint', endpoint)
+
+  Object.entries(params).forEach(([k,v])=>{
+    if(v !== undefined && v !== '') {
+      url.searchParams.set(k,v)
+    }
+  })
+
+  try{
+    const res = await fetch(url)
+    return await res.json()
+  }catch(e){
+    console.error(e)
+    return null
   }
+
 }
 
 // ─── LOAD MOVIES ───

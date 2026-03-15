@@ -3,11 +3,12 @@ export default async function handler(req, res) {
   const API_KEY = process.env.TMDB_KEY
   const BASE = "https://api.themoviedb.org/3"
 
-  const page = req.query.page || 1
-  const genre = req.query.genre || ""
-  const sort = req.query.sort || "popularity.desc"
+  const endpoint = req.query.endpoint || "/discover/movie"
 
-  const url = `${BASE}/discover/movie?api_key=${API_KEY}&page=${page}&with_genres=${genre}&sort_by=${sort}`
+  const params = new URLSearchParams(req.query)
+  params.delete("endpoint")
+
+  const url = `${BASE}${endpoint}?api_key=${API_KEY}&${params.toString()}`
 
   const response = await fetch(url)
   const data = await response.json()
